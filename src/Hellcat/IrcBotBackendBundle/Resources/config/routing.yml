@@ -1,0 +1,19 @@
+index:
+    resource: "@HellcatIrcBotBackendBundle/Controller/IndexController.php"
+    prefix: /
+    type: annotation
+
+twitch_auth:
+    resource: "@HellcatIrcBotBackendBundle/Controller/TwitchAuthController.php"
+    prefix: /auth
+    type: annotation
+
+bot_api_system_v1:
+    resource: "@HellcatIrcBotBackendBundle/Controller/BotApi/V1/SystemController.php"
+    prefix: /chatbotapi/v1
+    type: annotation
+
+bot_api_chatcommand_v1:
+    resource: "@HellcatIrcBotBackendBundle/Controller/BotApi/V1/ChatCommandController.php"
+    prefix: /chatbotapi/v1
+    type: annotation

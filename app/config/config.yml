@@ -68,3 +68,8 @@ swiftmailer:
     username:  "%mailer_user%"
     password:  "%mailer_password%"
     spool:     { type: memory }
+
+hellcat_twitch_api:
+    api_endpoint_root: https://api.twitch.tv/kraken
+    client_id: t6d1jgtxy471dq0j2lq8w9t1f3gh6nv
+    client_secret: llqmj55b9mhfqw9am4yv80zx22jvdys

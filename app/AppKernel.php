@@ -24,6 +24,7 @@ class AppKernel extends Kernel
             // app bundles
             new Hellcat\IrcBotBackendBundle\HellcatIrcBotBackendBundle(),
             new Hellcat\TwitchApiBundle\HellcatTwitchApiBundle(),
+            new Hellcat\Tools\UserBundle\HellcatToolsUserBundle(),
         ];
 
         // debug bundles

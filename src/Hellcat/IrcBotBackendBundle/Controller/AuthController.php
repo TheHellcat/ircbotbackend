@@ -6,19 +6,19 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Hellcat\IrcBotBackendBundle\Entity\System\User;
+use Hellcat\IrcBotBackendBundle\Entity\System\TwitchUser;
 
 /**
- * Class TwitchAuthController
+ * Class AuthController
  * @package Hellcat\IrcBotBackendBundle\Controller
  */
-class TwitchAuthController extends Controller
+class AuthController extends Controller
 {
     /**
-     * @Route("/login", name="twitch_auth")
+     * @Route("/twitch", name="twitch_auth")
      * @Template()
      */
-    public function indexAction(Request $request)
+    public function twitchAction(Request $request)
     {
         $redirUrl = 'http://live.hellcat.net/twitch-manager/auth.php'; //$this->generateUrl('twitch_auth');
         $twitch = $this->get('hellcat_twitch_api');
@@ -30,18 +30,19 @@ class TwitchAuthController extends Controller
             $twitchUserData = $twitch->api()->auth()->getUserData($twitchToken->getAccessToken());
 
             $em = $entityManager->getDoctrineEntityManager();
-            $user = $em->getRepository(User::class)->findOneBy(
+            $user = $em->getRepository(TwitchUser::class)->findOneBy(
                 [
                     'twitchId' => $twitchUserData->getUserId()
                 ]
             );
 
             if( null === $user ) {
-                $user = $entityManager->system()->user();
+                $user = $entityManager->system()->twitchUser();
                 $user->setCreated((string)time());
             }
 
             $user->setTwitchId($twitchUserData->getUserId());
+            $user->setLocalUserId('???');
             $user->setDisplayName($twitchUserData->getDisplayName());
             $user->setChannel(strtolower($twitchUserData->getDisplayName()));
             $user->setOauthToken($twitchToken->getAccessToken());

@@ -5,28 +5,35 @@ namespace Hellcat\IrcBotBackendBundle\Entity\System;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * User
+ * TwitchUser
  *
- * @ORM\Table(name="user")
- * @ORM\Entity(repositoryClass="Hellcat\IrcBotBackendBundle\Repository\UserRepository")
+ * @ORM\Table(name="twitch_user", indexes={@ORM\Index(name="idx_local_user", columns={"local_userid"})})
+ * @ORM\Entity(repositoryClass="Hellcat\IrcBotBackendBundle\Repository\TwitchUserRepository")
  */
-class User
+class TwitchUser
 {
     /**
      * @var string
      *
-     * @ORM\Column(name="user_id", type="string", length=64)
+     * @ORM\Column(name="id", type="string", length=64)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="UUID")
      */
-    private $userId;
+    private $id;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="twitch_id", type="string", length=64)
+     * @ORM\Column(name="twitch_userid", type="string", length=64)
      */
-    private $twitchId;
+    private $twitchUserId;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="local_userid", type="string", length=64)
+     */
+    private $localUserId;
 
     /**
      * @var string
@@ -80,36 +87,54 @@ class User
     /**
      * @return string
      */
-    public function getUserId()
+    public function getId()
     {
-        return $this->userId;
+        return $this->id;
     }
 
     /**
-     * @param string $userId
-     * @return User
+     * @param string $id
+     * @return TwitchUser
      */
-    public function setUserId($userId)
+    public function setId($id)
     {
-        $this->userId = $userId;
+        $this->id = $id;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getTwitchId()
+    public function getTwitchUserId()
     {
-        return $this->twitchId;
+        return $this->twitchUserId;
     }
 
     /**
-     * @param string $twitchId
-     * @return User
+     * @param string $twitchUserId
+     * @return TwitchUser
      */
-    public function setTwitchId($twitchId)
+    public function setTwitchUserId($twitchUserId)
     {
-        $this->twitchId = $twitchId;
+        $this->twitchUserId = $twitchUserId;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocalUserId()
+    {
+        return $this->localUserId;
+    }
+
+    /**
+     * @param string $localUserId
+     * @return TwitchUser
+     */
+    public function setLocalUserId($localUserId)
+    {
+        $this->localUserId = $localUserId;
         return $this;
     }
 
@@ -123,7 +148,7 @@ class User
 
     /**
      * @param string $displayName
-     * @return User
+     * @return TwitchUser
      */
     public function setDisplayName($displayName)
     {
@@ -141,7 +166,7 @@ class User
 
     /**
      * @param string $channel
-     * @return User
+     * @return TwitchUser
      */
     public function setChannel($channel)
     {
@@ -159,7 +184,7 @@ class User
 
     /**
      * @param string $oauthToken
-     * @return User
+     * @return TwitchUser
      */
     public function setOauthToken($oauthToken)
     {
@@ -177,7 +202,7 @@ class User
 
     /**
      * @param string $oauthRefreshToken
-     * @return User
+     * @return TwitchUser
      */
     public function setOauthRefreshToken($oauthRefreshToken)
     {
@@ -195,7 +220,7 @@ class User
 
     /**
      * @param string $scope
-     * @return User
+     * @return TwitchUser
      */
     public function setScope($scope)
     {
@@ -213,7 +238,7 @@ class User
 
     /**
      * @param string $created
-     * @return User
+     * @return TwitchUser
      */
     public function setCreated($created)
     {
@@ -231,7 +256,7 @@ class User
 
     /**
      * @param string $lastLogin
-     * @return User
+     * @return TwitchUser
      */
     public function setLastLogin($lastLogin)
     {

@@ -1,0 +1,22 @@
+services:
+
+    hc_usertools.login_user_provider:
+        class: Hellcat\Tools\UserBundle\Security\User\UserProvider
+        arguments:
+            - '@doctrine'
+
+    hcuser.security.authentication.provider:
+        class: Hellcat\Tools\UserBundle\Security\Authentication\Provider\Provider
+        arguments:
+            - '' # User Provider
+            - '@cache.app'
+        public: false
+
+    hcuser.security.authentication.listener:
+        class: Hellcat\Tools\UserBundle\Security\Firewall\Listener
+        arguments:
+            - '@security.token_storage'
+            - '@security.authentication.manager'
+            - '@doctrine'
+            - '@session'
+        public: false

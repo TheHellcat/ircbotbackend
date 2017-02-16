@@ -8,16 +8,16 @@ use Symfony\Component\Routing\Annotation\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 
 /**
- * Class IndexController
+ * Class UserController
  * @package Hellcat\IrcBotBackendBundle\Controller
  */
-class IndexController extends Controller
+class UserController extends Controller
 {
     /**
-     * @Route("/", name="homepage_index")
+     * @Route("/dashboard", name="user_dashboard")
      * @Template()
      */
-    public function indexAction(Request $request)
+    public function dashboardAction()
     {
     }
 }

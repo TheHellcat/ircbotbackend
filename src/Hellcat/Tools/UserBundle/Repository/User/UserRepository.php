@@ -1,10 +1,10 @@
 <?php
 
-namespace Hellcat\IrcBotBackendBundle\Repository;
+namespace Hellcat\Tools\UserBundle\Repository\User;
 
 /**
  * Class UserRepository
- * @package Hellcat\IrcBotBackendBundle\Repository
+ * @package Hellcat\Tools\UserBundle\Repository
  */
 class UserRepository extends \Doctrine\ORM\EntityRepository
 {

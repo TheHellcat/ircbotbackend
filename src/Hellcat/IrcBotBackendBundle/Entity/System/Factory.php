@@ -9,6 +9,14 @@ namespace Hellcat\IrcBotBackendBundle\Entity\System;
 class Factory
 {
     /**
+     * @return TwitchUser
+     */
+    public function twitchUser()
+    {
+        return new TwitchUser();
+    }
+
+    /**
      * @return User
      */
     public function user()

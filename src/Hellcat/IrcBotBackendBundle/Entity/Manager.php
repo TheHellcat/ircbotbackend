@@ -4,6 +4,7 @@ namespace Hellcat\IrcBotBackendBundle\Entity;
 
 use Doctrine\Bundle\DoctrineBundle\Registry as DoctrineRegistry;
 use Doctrine\Common\Persistence\ObjectManager as DoctrineObjectManager;
+
 /**
  * Class Manager
  * @package Hellcat\IrcBotBackendBundle\Entity

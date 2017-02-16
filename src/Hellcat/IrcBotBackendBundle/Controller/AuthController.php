@@ -32,7 +32,7 @@ class AuthController extends Controller
             $em = $entityManager->getDoctrineEntityManager();
             $user = $em->getRepository(TwitchUser::class)->findOneBy(
                 [
-                    'twitchId' => $twitchUserData->getUserId()
+                    'twitchUserId' => $twitchUserData->getUserId()
                 ]
             );
 
@@ -41,7 +41,7 @@ class AuthController extends Controller
                 $user->setCreated((string)time());
             }
 
-            $user->setTwitchId($twitchUserData->getUserId());
+            $user->setTwitchUserId($twitchUserData->getUserId());
             $user->setLocalUserId('???');
             $user->setDisplayName($twitchUserData->getDisplayName());
             $user->setChannel(strtolower($twitchUserData->getDisplayName()));

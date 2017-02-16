@@ -3,12 +3,16 @@
 namespace Hellcat\Tools\UserBundle\Service\UserManagement;
 
 /**
- * Class Register
+ * Class User
  * @package Hellcat\Tools\UserBundle\Service\UserManagement
  */
-class Register
+class User extends UserManagementBase
 {
-    public function registerUser($username, $password)
+    public function register($username, $password)
+    {
+    }
+
+    public function logout()
     {
     }
 }

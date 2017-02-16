@@ -1,22 +1,65 @@
 services:
 
+    # authentication related services
+
     hc_usertools.login_user_provider:
         class: Hellcat\Tools\UserBundle\Security\User\UserProvider
         arguments:
             - '@doctrine'
 
-    hcuser.security.authentication.provider:
+    hc_user.security.authentication.provider:
         class: Hellcat\Tools\UserBundle\Security\Authentication\Provider\Provider
         arguments:
             - '' # User Provider
             - '@cache.app'
         public: false
 
-    hcuser.security.authentication.listener:
+    hc_user.security.authentication.listener:
         class: Hellcat\Tools\UserBundle\Security\Firewall\Listener
         arguments:
             - '@security.token_storage'
             - '@security.authentication.manager'
+            - '@session'
+            - '@hc_user.service.firewall_listener_helper'
+        public: false
+
+
+    # internal dependencies
+
+    hc_user.configuration:
+        class: Hellcat\Tools\UserBundle\Model\Configuration
+        arguments:
+            - '90'
+            - '/login'
+
+    hc_user.factory.model:
+        class: Hellcat\Tools\UserBundle\Model\Factory
+        arguments:
+            - '@hc_user.configuration'
+
+    hc_user.factory.entity:
+        class: Hellcat\Tools\UserBundle\Entity\Factory
+        public: false
+
+    hc_user.service.firewall_listener_helper:
+        class: Hellcat\Tools\UserBundle\Service\Security\ListenerHelper
+        arguments:
             - '@doctrine'
             - '@session'
-        public: false
+            - '@hc_user.factory.entity'
+            - '@hc_user.configuration'
+
+
+    # public services to interface with bundle functions
+
+    hc_user.service.user:
+        class: Hellcat\Tools\UserBundle\Service\UserManagement\User
+        arguments:
+            - '@doctrine'
+            - '@session'
+
+    hc_user.service.profile:
+        class: Hellcat\Tools\UserBundle\Service\UserManagement\Profile
+        arguments:
+            - '@doctrine'
+            - '@session'

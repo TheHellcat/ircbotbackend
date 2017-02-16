@@ -18,12 +18,12 @@ class Factory implements SecurityFactoryInterface
     {
         $providerId = 'security.authentication.provider.hcuser.'.$id;
         $container
-            ->setDefinition($providerId, new DefinitionDecorator('hcuser.security.authentication.provider'))
+            ->setDefinition($providerId, new DefinitionDecorator('hc_user.security.authentication.provider'))
             ->replaceArgument(0, new Reference($userProvider))
         ;
 
         $listenerId = 'security.authentication.listener.hcuser.'.$id;
-        $listener = $container->setDefinition($listenerId, new DefinitionDecorator('hcuser.security.authentication.listener'));
+        $listener = $container->setDefinition($listenerId, new DefinitionDecorator('hc_user.security.authentication.listener'));
 
         return array($providerId, $listenerId, $defaultEntryPoint);
     }

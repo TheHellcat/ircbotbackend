@@ -9,10 +9,13 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\Firewall\ListenerInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\HttpFoundation\RedirectResponse;
 use Doctrine\Bundle\DoctrineBundle\Registry as DoctrineRegistry;
 use Hellcat\Tools\UserBundle\Security\Authentication\Token\UserToken;
 use Hellcat\Tools\UserBundle\Security\User\User;
 use Hellcat\Tools\UserBundle\Entity\User\UserLoginToken as UserLoginTokenEntity;
+use Hellcat\Tools\UserBundle\Entity\Factory as EntityFactory;
+use Hellcat\Tools\UserBundle\Service\Security\ListenerHelper;
 
 /**
  * Class Listener
@@ -24,28 +27,64 @@ class Listener implements ListenerInterface
     const FIELD_LOGIN_PASSWORD = 'loginPassword';
     const FIELD_SESSION_LOGINTOKEN = 'loginToken';
 
+    /**
+     * @var TokenStorageInterface
+     */
     protected $tokenStorage;
-    protected $authenticationManager;
-    protected $doctrine;
-    protected $session;
 
+    /**
+     * @var AuthenticationManagerInterface
+     */
+    protected $authenticationManager;
+
+//    /**
+//     * @var DoctrineRegistry
+//     */
+//    protected $doctrine;
+//
+    /**
+     * @var Session
+     */
+    protected $session;
+//
+//    /**
+//     * @var EntityFactory
+//     */
+//    protected $entities;
+
+    /**
+     * @var ListenerHelper
+     */
+    protected $helper;
+
+    /**
+     * Listener constructor.
+     * @param TokenStorageInterface $tokenStorage
+     * @param AuthenticationManagerInterface $authenticationManager
+     * @param DoctrineRegistry $doctrine
+     * @param Session $session
+     * @param EntityFactory $entities
+     */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         AuthenticationManagerInterface $authenticationManager,
-        DoctrineRegistry $doctrine,
-        Session $session
+        Session $session,
+        ListenerHelper $helper
     )
     {
         $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
-        $this->doctrine = $doctrine;
         $this->session = $session;
+        $this->helper = $helper;
 
         if (!$this->session->isStarted()) {
             $this->session->start();
         }
     }
 
+    /**
+     * @param GetResponseEvent $event
+     */
     public function handle(GetResponseEvent $event)
     {
         $request = $event->getRequest();
@@ -72,33 +111,8 @@ class Listener implements ListenerInterface
 
         try {
             $authToken = $this->authenticationManager->authenticate($token);
-
-            /** @var User $user */
-            $user = $authToken->getUser();
-            $user->getUserEntity()->setLastLogin((string)time());
-            $this->doctrine->getManager()->persist($user->getUserEntity());
-            $user->setUserEntity(null);
-
-            $dbUserLoginToken = $this->doctrine->getManager()->getRepository(UserLoginTokenEntity::class);
-            $userLoginToken = $dbUserLoginToken->findOneBy(
-                [
-                    'token' => $this->session->get(self::FIELD_SESSION_LOGINTOKEN, '')
-                ]
-            );
-            if (null === $userLoginToken) {
-                $userLoginToken = new UserLoginTokenEntity(); // FIXME: create entity manager/factory and get object from there!!!!!!!!!!!!!
-            }
-            $userLoginToken->setUsername($user->getUsername());
-            $userLoginToken->setSessionVerifyHash($verifyHash);
-            $userLoginToken->setTtl((string)(time() + 300));  // TODO: make TTL configurable
-            $this->doctrine->getManager()->persist($userLoginToken);
-
-            $this->doctrine->getManager()->flush();
-
-            $this->session->set(self::FIELD_SESSION_LOGINTOKEN, $userLoginToken->getToken());
-
+            $this->helper->updateLogin($authToken->getUser(), $verifyHash);
             $this->tokenStorage->setToken($authToken);
-
             return;
         } catch (AuthenticationException $failed) {
             $token = $this->tokenStorage->getToken();
@@ -109,9 +123,10 @@ class Listener implements ListenerInterface
 
 
         // By default deny authorization
-        $response = new Response();
-        $response->setStatusCode(Response::HTTP_FORBIDDEN);
-        $response->setContent('403 - no no');
-        $event->setResponse($response);
+//        $response = new Response();
+//        $response->setStatusCode(Response::HTTP_FORBIDDEN);
+//        $response->setContent('403 - no no');
+//        $event->setResponse($response);
+        $event->setResponse($this->helper->getRedirectResponse());
     }
 }

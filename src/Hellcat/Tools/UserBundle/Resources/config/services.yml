@@ -10,7 +10,7 @@ services:
     hc_user.security.authentication.provider:
         class: Hellcat\Tools\UserBundle\Security\Authentication\Provider\Provider
         arguments:
-            - '' # User Provider
+            - '@hc_usertools.login_user_provider' # User Provider - WILL(!) be overwritten/replaced with the configured user provider when instantiated by the firewall
             - '@cache.app'
         public: false
 
@@ -29,8 +29,9 @@ services:
     hc_user.configuration:
         class: Hellcat\Tools\UserBundle\Model\Configuration
         arguments:
-            - '90'
-            - '/login'
+            - '90'      # logintoken TTL
+            - '/login'  # 403 redir URL
+            - '90'      # remeber-me cookie TTL
 
     hc_user.factory.model:
         class: Hellcat\Tools\UserBundle\Model\Factory
@@ -57,6 +58,9 @@ services:
         arguments:
             - '@doctrine'
             - '@session'
+            - '@hc_user.security.authentication.provider'
+            - '@hc_user.service.firewall_listener_helper'
+            - '@hc_user.factory.model'
 
     hc_user.service.profile:
         class: Hellcat\Tools\UserBundle\Service\UserManagement\Profile

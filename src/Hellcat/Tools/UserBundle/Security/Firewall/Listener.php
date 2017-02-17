@@ -25,6 +25,7 @@ class Listener implements ListenerInterface
 {
     const FIELD_LOGIN_USERNAME = 'loginUsername';
     const FIELD_LOGIN_PASSWORD = 'loginPassword';
+    const FIELD_LOGIN_REMEMBERME = 'loginRememberme';
     const FIELD_SESSION_LOGINTOKEN = 'loginToken';
 
     /**
@@ -37,20 +38,10 @@ class Listener implements ListenerInterface
      */
     protected $authenticationManager;
 
-//    /**
-//     * @var DoctrineRegistry
-//     */
-//    protected $doctrine;
-//
     /**
      * @var Session
      */
     protected $session;
-//
-//    /**
-//     * @var EntityFactory
-//     */
-//    protected $entities;
 
     /**
      * @var ListenerHelper
@@ -88,21 +79,24 @@ class Listener implements ListenerInterface
     public function handle(GetResponseEvent $event)
     {
         $request = $event->getRequest();
-
-        $userAgent = $request->headers->get('User-Agent', '');
-        $verifyHash = md5($userAgent);
-
+        $verifyHash = $this->helper->generateSessionVerifyHash($request);
         $token = new UserToken();
-        if (
-            (strtoupper($request->getMethod()) == 'GET')  // FIXME: 'GET' is only for dev'ing, make this 'POST' once it all works
-            && ($request->get(self::FIELD_LOGIN_USERNAME, '*') != '*')
-            && ($request->get(self::FIELD_LOGIN_PASSWORD, '*') != '*')
-        ) {
-            $token->setUser($request->get(self::FIELD_LOGIN_USERNAME));
-            $token->setUsername($request->get(self::FIELD_LOGIN_USERNAME));
-            $token->setPassword($request->get(self::FIELD_LOGIN_PASSWORD));
-            $token->setCredentialsSource('LOGIN');
-        } elseif ($this->session->has(self::FIELD_SESSION_LOGINTOKEN)) {
+
+        if( $request->cookies->has(self::FIELD_LOGIN_REMEMBERME) ) {
+            $this->session->set(self::FIELD_SESSION_LOGINTOKEN, $request->cookies->get(self::FIELD_LOGIN_REMEMBERME));
+        }
+
+//        if (
+//            (strtoupper($request->getMethod()) == 'GET')  // FIXME: 'GET' is only for dev'ing, make this 'POST' once it all works
+//            && ($request->get(self::FIELD_LOGIN_USERNAME, '*') != '*')
+//            && ($request->get(self::FIELD_LOGIN_PASSWORD, '*') != '*')
+//        ) {
+//            $token->setUser($request->get(self::FIELD_LOGIN_USERNAME));
+//            $token->setUsername($request->get(self::FIELD_LOGIN_USERNAME));
+//            $token->setPassword($request->get(self::FIELD_LOGIN_PASSWORD));
+//            $token->setCredentialsSource('LOGIN');
+//        } else
+        if ($this->session->has(self::FIELD_SESSION_LOGINTOKEN)) {
             $token->setUser($this->session->get(self::FIELD_SESSION_LOGINTOKEN));
             $token->setSessionLoginToken($this->session->get(self::FIELD_SESSION_LOGINTOKEN));
             $token->setSessionVerifyHash($verifyHash);
@@ -111,7 +105,7 @@ class Listener implements ListenerInterface
 
         try {
             $authToken = $this->authenticationManager->authenticate($token);
-            $this->helper->updateLogin($authToken->getUser(), $verifyHash);
+            $this->helper->updateLogin($authToken->getUser(), $verifyHash, $request->get(self::FIELD_LOGIN_REMEMBERME, '0'));
             $this->tokenStorage->setToken($authToken);
             return;
         } catch (AuthenticationException $failed) {

@@ -40,6 +40,14 @@ class Provider implements AuthenticationProviderInterface
     }
 
     /**
+     * @param UserProvider $userProvider
+     */
+    public function setUserProvider(UserProvider $userProvider)
+    {
+        $this->userProvider = $userProvider;
+    }
+
+    /**
      * @param TokenInterface $token
      * @return UserToken
      */
@@ -62,7 +70,7 @@ class Provider implements AuthenticationProviderInterface
             $isRemeberedLogin = true;
         }
 
-        if ((($user->getUsername() == $token->getUsername()) && ($user->getUserEntity()->checkPassword($token->getPassword()))) || $isRemeberedLogin) {
+        if (((null !== $user) && ($user->getUsername() == $token->getUsername()) && ($user->getUserEntity()->checkPassword($token->getPassword()))) || $isRemeberedLogin) {
             $authenticatedToken = new UserToken($user->getRoles());
             $authenticatedToken->setUser($user);
             $authenticatedToken->setUsername($user->getUsername());

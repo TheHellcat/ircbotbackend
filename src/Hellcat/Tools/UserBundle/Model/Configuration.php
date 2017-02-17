@@ -19,14 +19,21 @@ class Configuration
     private $noAuthRedirUrl;
 
     /**
+     * @var integer
+     */
+    private $rememberCookieTtl;
+
+    /**
      * Configuration constructor.
      * @param integer $ttl
      * @param string $noAuthRedirUrl
+     * @param integer $rememberCookieTtl
      */
-    public function __construct($ttl, $noAuthRedirUrl)
+    public function __construct($ttl, $noAuthRedirUrl, $rememberCookieTtl)
     {
         $this->ttl = $ttl;
-        $this->noAuthRedirUrl =$noAuthRedirUrl;
+        $this->noAuthRedirUrl = $noAuthRedirUrl;
+        $this->rememberCookieTtl = $rememberCookieTtl;
     }
 
     /**
@@ -43,5 +50,13 @@ class Configuration
     public function getNoAuthRedirUrl()
     {
         return $this->noAuthRedirUrl;
+    }
+
+    /**
+     * @return integer
+     */
+    public function getRememberCookieTtl()
+    {
+        return $this->rememberCookieTtl;
     }
 }

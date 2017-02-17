@@ -15,4 +15,9 @@ class Factory
     {
         return new User();
     }
+
+    public function loginResult()
+    {
+        return new LoginResult();
+    }
 }

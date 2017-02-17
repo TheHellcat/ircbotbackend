@@ -14,12 +14,12 @@ abstract class UserManagementBase
     /**
      * @var DoctrineRegistry
      */
-    private $doctrine;
+    protected $doctrine;
 
     /**
      * @var Session
      */
-    private $session;
+    protected $session;
 
     /**
      * UserManagementBase constructor.

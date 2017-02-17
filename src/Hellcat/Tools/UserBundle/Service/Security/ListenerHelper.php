@@ -4,6 +4,7 @@ namespace Hellcat\Tools\UserBundle\Service\Security;
 
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Bundle\DoctrineBundle\Registry as DoctrineRegistry;
 use Hellcat\Tools\UserBundle\Security\User\User;
 use Hellcat\Tools\UserBundle\Entity\User\UserLoginToken as UserLoginTokenEntity;
@@ -65,10 +66,21 @@ class ListenerHelper
     }
 
     /**
+     * @param Request $request
+     * @return string
+     */
+    public function generateSessionVerifyHash(Request $request)
+    {
+        $userAgent = $request->headers->get('User-Agent', '');
+        return md5($userAgent);
+    }
+
+    /**
      * @param User $user
      * @param string $verifyHash
+     * @param string $remember
      */
-    public function updateLogin(User $user, $verifyHash)
+    public function updateLogin(User $user, $verifyHash, $remember)
     {
         $user->getUserEntity()->setLastLogin((string)time());
         $this->doctrine->getManager()->persist($user->getUserEntity());

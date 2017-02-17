@@ -64,22 +64,23 @@ class User extends UserManagementBase
             $result
                 ->setSuccess(true)
                 ->setMessage('OK');
-        } catch( \Exception $exception ) {
+
+            if ('REMEMBER' == $remember) {
+                $dbUserLoginToken = $this->doctrine->getManager()->getRepository(UserLoginTokenEntity::class);
+                $userLoginToken = $dbUserLoginToken->findOneBy(
+                    [
+                        'token' => $this->session->get(self::FIELD_SESSION_LOGINTOKEN, '')
+                    ]
+                );
+                if( null !== $userLoginToken  ) {
+                    $cookie = new Cookie(self::FIELD_LOGIN_REMEMBERME, $userLoginToken->getToken(), time() + 90, '/', null, false, true, false, null);
+                    $response->headers->setCookie($cookie);
+                }
+            }
+        } catch (\Exception $exception) {
             $result
                 ->setSuccess(false)
                 ->setMessage($exception->getMessage());
-        }
-
-        if( 'REMEMBER' == $remember ) {
-            $dbUserLoginToken = $this->doctrine->getManager()->getRepository(UserLoginTokenEntity::class);
-            $userLoginToken = $dbUserLoginToken->findOneBy(
-                [
-                    'token' => $this->session->get(self::FIELD_SESSION_LOGINTOKEN, '')
-                ]
-            );
-
-            $cookie = new Cookie(self::FIELD_LOGIN_REMEMBERME, $userLoginToken->getToken(), time() + 90, '/', null, false, true, false, null);
-            $response->headers->setCookie($cookie);
         }
 
         return $result;

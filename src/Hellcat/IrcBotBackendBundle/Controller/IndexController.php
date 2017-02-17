@@ -21,19 +21,22 @@ class IndexController extends Controller
      */
     public function indexAction(Request $request)
     {
+        $loginMessage = '';
+
         $user = $this->get('hc_user.service.user');
 
         if( $request->get('login', '') == 'login' ) {
 //            $response = new RedirectResponse($request->getRequestUri(), 302);
-            $response = new RedirectResponse('/', 302);
+            $response = new RedirectResponse('/user/dashboard', 302);
 
             /** @var \Hellcat\Tools\UserBundle\Service\UserManagement\User $user */
             $r = $user->login('test', 'xxxxxxxx', 'REMEMBER', $request, $response);
-            $request->getSession()->set('_loginStatus', $r->isSuccess());
-            $request->getSession()->set('_loginMessage', $r->getMessage());
 
+            if ( $r->isSuccess() ) {
+                return $response;
+            }
 
-            return $response;
+            $loginMessage = $r->getMessage();
         }
 
         if( $request->get('login', '') == 'logout' ) {
@@ -42,12 +45,8 @@ class IndexController extends Controller
             return $response;
         }
 
-        if( $request->getSession()->get('_loginStatus', false) ) {
-            $request->getSession()->remove('_loginStatus');
-            $request->getSession()->remove('_loginMessage');
-            return $this->redirect('/user/dashboard');
-        }
-
-        return [];
+        return [
+            'loginMessage' => $loginMessage
+        ];
     }
 }

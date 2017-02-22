@@ -3,19 +3,19 @@ services:
     # authentication related services
 
     hc_usertools.login_user_provider:
-        class: Hellcat\Tools\UserBundle\Security\User\UserProvider
+        class: Hellcat\Tools\UserBundle\Security\User\LoginUserProvider
         arguments:
             - '@doctrine'
 
-    hc_user.security.authentication.provider:
-        class: Hellcat\Tools\UserBundle\Security\Authentication\Provider\Provider
+    hc_user.security.authentication.login_user.provider:
+        class: Hellcat\Tools\UserBundle\Security\Authentication\Provider\LoginUserProvider
         arguments:
             - '@hc_usertools.login_user_provider' # User Provider - WILL(!) be overwritten/replaced with the configured user provider when instantiated by the firewall
             - '@cache.app'
         public: false
 
-    hc_user.security.authentication.listener:
-        class: Hellcat\Tools\UserBundle\Security\Firewall\Listener
+    hc_user.security.authentication.login_user.listener:
+        class: Hellcat\Tools\UserBundle\Security\Firewall\LoginUserListener
         arguments:
             - '@security.token_storage'
             - '@security.authentication.manager'
@@ -58,7 +58,7 @@ services:
         arguments:
             - '@doctrine'
             - '@session'
-            - '@hc_user.security.authentication.provider'
+            - '@hc_user.security.authentication.login_user.provider'
             - '@hc_user.service.firewall_listener_helper'
             - '@hc_user.factory.model'
 

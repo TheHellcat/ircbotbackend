@@ -10,7 +10,7 @@ use Hellcat\Tools\UserBundle\Entity\User as UserEntity;
  * Class User
  * @package Hellcat\Tools\UserBundle\Security\User
  */
-class User implements UserInterface, EquatableInterface
+class LoginUser implements UserInterface, EquatableInterface
 {
     private $username;
     private $password;
@@ -64,7 +64,7 @@ class User implements UserInterface, EquatableInterface
 
     public function isEqualTo(UserInterface $user)
     {
-        if (!$user instanceof User) {
+        if (!$user instanceof LoginUser) {
             return false;
         }
 

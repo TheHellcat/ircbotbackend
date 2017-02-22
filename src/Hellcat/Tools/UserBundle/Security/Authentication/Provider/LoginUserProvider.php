@@ -4,19 +4,17 @@ namespace Hellcat\Tools\UserBundle\Security\Authentication\Provider;
 
 use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
-use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
-use Symfony\Component\Security\Core\Exception\NonceExpiredException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Hellcat\Tools\UserBundle\Security\Authentication\Token\UserToken;
-use Hellcat\Tools\UserBundle\Security\User\User;
-use Hellcat\Tools\UserBundle\Security\User\UserProvider;
+use Hellcat\Tools\UserBundle\Security\Authentication\Token\LoginUserToken as UserToken;
+use Hellcat\Tools\UserBundle\Security\User\LoginUser as User;
+use Hellcat\Tools\UserBundle\Security\User\LoginUserProvider as UserProvider;
 
 /**
  * Class Provider
  * @package Hellcat\Tools\UserBundle\Security\Authentication\Provider
  */
-class Provider implements AuthenticationProviderInterface
+class LoginUserProvider implements AuthenticationProviderInterface
 {
     /**
      * @var UserProvider

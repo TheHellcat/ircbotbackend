@@ -1,7 +1,7 @@
 security:
 
     providers:
-        hc_local_db:
+        hc_userprovider:
             id: hc_usertools.login_user_provider
 
         in_memory:
@@ -14,7 +14,7 @@ security:
 
         user:
             pattern: ^/user
-            provider: hc_local_db
+            provider: hc_userprovider
             hc_user: true
 
         index:

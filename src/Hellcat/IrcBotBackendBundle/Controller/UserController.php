@@ -19,5 +19,8 @@ class UserController extends Controller
      */
     public function dashboardAction()
     {
+        return [
+            'user' => $this->getUser()
+        ];
     }
 }

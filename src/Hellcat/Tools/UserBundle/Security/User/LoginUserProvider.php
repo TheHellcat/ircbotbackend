@@ -14,7 +14,7 @@ use Hellcat\Tools\UserBundle\Entity\User\UserLoginToken as UserLoginTokenEntity;
  * Class UserProvider
  * @package Hellcat\Tools\UserBundle\Security\User
  */
-class UserProvider implements UserProviderInterface
+class LoginUserProvider implements UserProviderInterface
 {
     /**
      * @var DoctrineRegistry
@@ -41,7 +41,7 @@ class UserProvider implements UserProviderInterface
                 $userRoles[] = $aclRole->getRole()->getName();
             }
 
-            return new User($username, $userData->getPassword(), '', $userRoles, $userData);
+            return new LoginUser($username, $userData->getPassword(), '', $userRoles, $userData);
         }
 
         throw new UsernameNotFoundException(
@@ -70,7 +70,7 @@ class UserProvider implements UserProviderInterface
 
     public function refreshUser(UserInterface $user)
     {
-        if (!$user instanceof User) {
+        if (!$user instanceof LoginUser) {
             throw new UnsupportedUserException(
                 sprintf('Instances of "%s" are not supported.', get_class($user))
             );
@@ -81,6 +81,6 @@ class UserProvider implements UserProviderInterface
 
     public function supportsClass($class)
     {
-        return User::class === $class;
+        return LoginUser::class === $class;
     }
 }

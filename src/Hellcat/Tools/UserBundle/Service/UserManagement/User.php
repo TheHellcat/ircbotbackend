@@ -7,11 +7,12 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Cookie;
 use Doctrine\Bundle\DoctrineBundle\Registry as DoctrineRegistry;
-use Hellcat\Tools\UserBundle\Security\Authentication\Provider\Provider as AuthenticationProvider;
+use Hellcat\Tools\UserBundle\Security\Authentication\Provider\LoginUserProvider as AuthenticationProvider;
 use Hellcat\Tools\UserBundle\Service\Security\ListenerHelper;
-use Hellcat\Tools\UserBundle\Security\Authentication\Token\UserToken;
+use Hellcat\Tools\UserBundle\Security\Authentication\Token\LoginUserToken as UserToken;
 use Hellcat\Tools\UserBundle\Model\Factory as ModelFactory;
 use Hellcat\Tools\UserBundle\Entity\User\UserLoginToken as UserLoginTokenEntity;
+use Hellcat\Tools\UserBundle\Security\Constants;
 
 /**
  * Class User
@@ -19,11 +20,6 @@ use Hellcat\Tools\UserBundle\Entity\User\UserLoginToken as UserLoginTokenEntity;
  */
 class User extends UserManagementBase
 {
-    const FIELD_LOGIN_USERNAME = 'loginUsername';
-    const FIELD_LOGIN_PASSWORD = 'loginPassword';
-    const FIELD_LOGIN_REMEMBERME = 'loginRememberme';
-    const FIELD_SESSION_LOGINTOKEN = 'loginToken';
-
     private $authProvider;
 
     private $fwListenerHelper;
@@ -69,11 +65,11 @@ class User extends UserManagementBase
                 $dbUserLoginToken = $this->doctrine->getManager()->getRepository(UserLoginTokenEntity::class);
                 $userLoginToken = $dbUserLoginToken->findOneBy(
                     [
-                        'token' => $this->session->get(self::FIELD_SESSION_LOGINTOKEN, '')
+                        'token' => $this->session->get(Constants::FIELD_SESSION_LOGINTOKEN, '')
                     ]
                 );
                 if( null !== $userLoginToken  ) {
-                    $cookie = new Cookie(self::FIELD_LOGIN_REMEMBERME, $userLoginToken->getToken(), time() + 90, '/', null, false, true, false, null);
+                    $cookie = new Cookie(Constants::FIELD_LOGIN_REMEMBERME, $userLoginToken->getToken(), time() + 90, '/', null, false, true, false, null);
                     $response->headers->setCookie($cookie);
                 }
             }
@@ -94,6 +90,6 @@ class User extends UserManagementBase
     {
         $this->session->clear();
         $this->session->invalidate();
-        $response->headers->clearCookie('loginRememberme');
+        $response->headers->clearCookie(Constants::FIELD_LOGIN_REMEMBERME);
     }
 }

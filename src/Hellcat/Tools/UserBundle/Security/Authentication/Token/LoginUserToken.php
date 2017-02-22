@@ -8,7 +8,7 @@ use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
  * Class UserToken
  * @package Hellcat\Tools\UserBundle\Security\Authentication\Token
  */
-class UserToken extends AbstractToken
+class LoginUserToken extends AbstractToken
 {
     /**
      * @var integer
@@ -72,7 +72,7 @@ class UserToken extends AbstractToken
 
     /**
      * @param string $username
-     * @return UserToken
+     * @return LoginUserToken
      */
     public function setUsername($username)
     {
@@ -90,7 +90,7 @@ class UserToken extends AbstractToken
 
     /**
      * @param string $password
-     * @return UserToken
+     * @return LoginUserToken
      */
     public function setPassword($password)
     {
@@ -116,7 +116,7 @@ class UserToken extends AbstractToken
 
     /**
      * @param string $credentialsSource
-     * @return UserToken
+     * @return LoginUserToken
      */
     public function setCredentialsSource($credentialsSource)
     {
@@ -134,7 +134,7 @@ class UserToken extends AbstractToken
 
     /**
      * @param string $sessionLoginToken
-     * @return UserToken
+     * @return LoginUserToken
      */
     public function setSessionLoginToken($sessionLoginToken)
     {
@@ -152,7 +152,7 @@ class UserToken extends AbstractToken
 
     /**
      * @param string $sessionVerifyHash
-     * @return UserToken
+     * @return LoginUserToken
      */
     public function setSessionVerifyHash($sessionVerifyHash)
     {

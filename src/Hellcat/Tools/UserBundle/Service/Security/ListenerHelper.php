@@ -6,10 +6,11 @@ use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\Bundle\DoctrineBundle\Registry as DoctrineRegistry;
-use Hellcat\Tools\UserBundle\Security\User\User;
+use Hellcat\Tools\UserBundle\Security\User\LoginUser as User;
 use Hellcat\Tools\UserBundle\Entity\User\UserLoginToken as UserLoginTokenEntity;
 use Hellcat\Tools\UserBundle\Entity\Factory as EntityFactory;
 use Hellcat\Tools\UserBundle\Model\Configuration;
+use Hellcat\Tools\UserBundle\Security\Constants;
 
 /**
  * Class ListenerHelper
@@ -17,10 +18,6 @@ use Hellcat\Tools\UserBundle\Model\Configuration;
  */
 class ListenerHelper
 {
-    const FIELD_LOGIN_USERNAME = 'loginUsername';
-    const FIELD_LOGIN_PASSWORD = 'loginPassword';
-    const FIELD_SESSION_LOGINTOKEN = 'loginToken';
-
     /**
      * @var DoctrineRegistry
      */
@@ -89,7 +86,7 @@ class ListenerHelper
         $dbUserLoginToken = $this->doctrine->getManager()->getRepository(UserLoginTokenEntity::class);
         $userLoginToken = $dbUserLoginToken->findOneBy(
             [
-                'token' => $this->session->get(self::FIELD_SESSION_LOGINTOKEN, '')
+                'token' => $this->session->get(Constants::FIELD_SESSION_LOGINTOKEN, '')
             ]
         );
         if (null === $userLoginToken) {
@@ -102,7 +99,7 @@ class ListenerHelper
 
         $this->doctrine->getManager()->flush();
 
-        $this->session->set(self::FIELD_SESSION_LOGINTOKEN, $userLoginToken->getToken());
+        $this->session->set(Constants::FIELD_SESSION_LOGINTOKEN, $userLoginToken->getToken());
     }
 
     /**

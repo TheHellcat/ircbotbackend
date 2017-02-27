@@ -5,8 +5,12 @@ namespace Hellcat\Tools\UserBundle\Service\Security;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Doctrine\Bundle\DoctrineBundle\Registry as DoctrineRegistry;
-use Hellcat\Tools\UserBundle\Security\User\LoginUser as User;
+use Hellcat\Tools\UserBundle\Security\User\User as User;
+use Hellcat\Tools\UserBundle\Entity\User\UserApiTokenAssign as TokenAssignEntity;
+use Hellcat\Tools\UserBundle\Entity\User\UserApiToken as TokenEntity;
+use Hellcat\Tools\UserBundle\Entity\User\User as UserEntity;
 use Hellcat\Tools\UserBundle\Entity\User\UserLoginToken as UserLoginTokenEntity;
 use Hellcat\Tools\UserBundle\Entity\Factory as EntityFactory;
 use Hellcat\Tools\UserBundle\Model\Configuration;
@@ -73,33 +77,97 @@ class ListenerHelper
     }
 
     /**
+     * @param Request $request
+     * @param $clientSecret
+     * @return string
+     */
+    public function generateApiRequestHash(Request $request, $clientSecret)
+    {
+        $requestHash = '';
+        if (strlen($clientSecret) > 1) {
+            $periodLength = 90;
+            $timePeriod = (int)((time() - ($periodLength / 2)) / $periodLength);
+            $hashStr = $request->getUri() . $request->getContent() . $timePeriod . $clientSecret;
+            $requestHash = hash('sha512', $hashStr);
+        } else {
+            throw new AuthenticationException('Empty client secret, that usually doesn\'t mean good things.');
+        }
+
+        return $requestHash;
+    }
+
+    /**
+     * @param string $username
+     * @param string $apitoken
+     * @return string
+     */
+    public function getApiUserSecret($username, $apitoken)
+    {
+        $dbUser = $this->doctrine->getManager()->getRepository(UserEntity::class);
+        $dbToken = $this->doctrine->getManager()->getRepository(TokenEntity::class);
+        $dbTokenAssign = $this->doctrine->getManager()->getRepository(TokenAssignEntity::class);
+
+        $user = $dbUser->findOneBy(
+            [
+                'username' => $username
+            ]
+        );
+
+        $token = $dbToken->findOneBy(
+            [
+                'tokenIdentifier' => $apitoken
+            ]
+        );
+
+        $userSecret = '';
+        if ((null !== $user) && (null !== $token)) {
+            $assign = $dbTokenAssign->findOneBy(
+                [
+                    'userId' => $user->getUserId(),
+                    'tokenId' => $token->getTokenId()
+                ]
+            );
+            $userSecret = $assign->getSecret();
+        } else {
+            throw new AuthenticationException('No API secret found for user.');
+        }
+
+        return $userSecret;
+    }
+
+    /**
      * @param User $user
      * @param string $verifyHash
      * @param string $remember
      */
-    public function updateLogin(User $user, $verifyHash, $remember)
+    public function updateLogin(User $user, $verifyHash, $remember, $skipTokenUpdate = false)
     {
         $user->getUserEntity()->setLastLogin((string)time());
         $this->doctrine->getManager()->persist($user->getUserEntity());
         $user->setUserEntity(null);
 
-        $dbUserLoginToken = $this->doctrine->getManager()->getRepository(UserLoginTokenEntity::class);
-        $userLoginToken = $dbUserLoginToken->findOneBy(
-            [
-                'token' => $this->session->get(Constants::FIELD_SESSION_LOGINTOKEN, '')
-            ]
-        );
-        if (null === $userLoginToken) {
-            $userLoginToken = $this->entities->user()->userLoginToken();
+        $userLoginToken = null;
+        if (!$skipTokenUpdate) {
+            $dbUserLoginToken = $this->doctrine->getManager()->getRepository(UserLoginTokenEntity::class);
+            $userLoginToken = $dbUserLoginToken->findOneBy(
+                [
+                    'token' => $this->session->get(Constants::FIELD_SESSION_LOGINTOKEN, '')
+                ]
+            );
+            if (null === $userLoginToken) {
+                $userLoginToken = $this->entities->user()->userLoginToken();
+            }
+            $userLoginToken->setUsername($user->getUsername());
+            $userLoginToken->setSessionVerifyHash($verifyHash);
+            $userLoginToken->setTtl((string)(time() + $this->configuration->getTtl()));
+            $this->doctrine->getManager()->persist($userLoginToken);
         }
-        $userLoginToken->setUsername($user->getUsername());
-        $userLoginToken->setSessionVerifyHash($verifyHash);
-        $userLoginToken->setTtl((string)(time() + $this->configuration->getTtl()));
-        $this->doctrine->getManager()->persist($userLoginToken);
 
         $this->doctrine->getManager()->flush();
 
-        $this->session->set(Constants::FIELD_SESSION_LOGINTOKEN, $userLoginToken->getToken());
+        if (null !== $userLoginToken) {
+            $this->session->set(Constants::FIELD_SESSION_LOGINTOKEN, $userLoginToken->getToken());
+        }
     }
 
     /**

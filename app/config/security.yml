@@ -4,6 +4,9 @@ security:
         hc_userprovider:
             id: hc_usertools.login_user_provider
 
+        hc_apiuserprovider:
+            id: hc_usertools.api_user_provider
+
         in_memory:
             memory: ~
 
@@ -16,6 +19,11 @@ security:
             pattern: ^/user
             provider: hc_userprovider
             hc_user: true
+
+        api:
+            pattern: ^/chatbotapi
+            provider: hc_apiuserprovider
+            hc_apiuser: true
 
         index:
             pattern: ^/

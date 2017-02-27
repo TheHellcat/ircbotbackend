@@ -8,7 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Class UserAcl
  *
  * @ORM\Table(name="user_acl")
- * @ORM\Entity(repositoryClass="Hellcat\Tools\UserBundle\Repository\UserAclRepository")
+ * @ORM\Entity(repositoryClass="Hellcat\Tools\UserBundle\Repository\User\UserAclRepository")
  *
  * @package Hellcat\Tools\UserBundle\Entity
  */

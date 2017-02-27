@@ -7,6 +7,11 @@ services:
         arguments:
             - '@doctrine'
 
+    hc_usertools.api_user_provider:
+        class: Hellcat\Tools\UserBundle\Security\User\ApiUserProvider
+        arguments:
+            - '@doctrine'
+
     hc_user.security.authentication.login_user.provider:
         class: Hellcat\Tools\UserBundle\Security\Authentication\Provider\LoginUserProvider
         arguments:
@@ -14,8 +19,24 @@ services:
             - '@cache.app'
         public: false
 
+    hc_user.security.authentication.api_user.provider:
+        class: Hellcat\Tools\UserBundle\Security\Authentication\Provider\ApiUserProvider
+        arguments:
+            - '' # User Provider - WILL(!) be overwritten/replaced with the configured user provider when instantiated by the firewall
+            - '@cache.app'
+        public: false
+
     hc_user.security.authentication.login_user.listener:
         class: Hellcat\Tools\UserBundle\Security\Firewall\LoginUserListener
+        arguments:
+            - '@security.token_storage'
+            - '@security.authentication.manager'
+            - '@session'
+            - '@hc_user.service.firewall_listener_helper'
+        public: false
+
+    hc_user.security.authentication.api_user.listener:
+        class: Hellcat\Tools\UserBundle\Security\Firewall\ApiUserListener
         arguments:
             - '@security.token_storage'
             - '@security.authentication.manager'
@@ -32,11 +53,13 @@ services:
             - '90'      # logintoken TTL
             - '/login'  # 403 redir URL
             - '90'      # remeber-me cookie TTL
+        public: false
 
     hc_user.factory.model:
         class: Hellcat\Tools\UserBundle\Model\Factory
         arguments:
             - '@hc_user.configuration'
+        public: false
 
     hc_user.factory.entity:
         class: Hellcat\Tools\UserBundle\Entity\Factory
@@ -49,6 +72,7 @@ services:
             - '@session'
             - '@hc_user.factory.entity'
             - '@hc_user.configuration'
+        public: false
 
 
     # public services to interface with bundle functions

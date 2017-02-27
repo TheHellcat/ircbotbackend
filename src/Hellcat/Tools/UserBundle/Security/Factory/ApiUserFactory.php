@@ -12,7 +12,7 @@ use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\SecurityF
  * Class Factory
  * @package Hellcat\Tools\UserBundle\Security\Factory
  */
-class LoginUserFactory implements SecurityFactoryInterface
+class ApiUserFactory implements SecurityFactoryInterface
 {
     /**
      * @param ContainerBuilder $container
@@ -24,16 +24,16 @@ class LoginUserFactory implements SecurityFactoryInterface
      */
     public function create(ContainerBuilder $container, $id, $config, $userProvider, $defaultEntryPoint)
     {
-        $providerId = 'security.authentication.provider.hcuser.'.$id;
+        $providerId = 'security.authentication.provider.hcapiuser.'.$id;
         $container
-            ->setDefinition($providerId, new DefinitionDecorator('hc_user.security.authentication.login_user.provider'))
+            ->setDefinition($providerId, new DefinitionDecorator('hc_user.security.authentication.api_user.provider'))
             ->replaceArgument(0, new Reference($userProvider))
         ;
 
-        $listenerId = 'security.authentication.listener.hcuser.'.$id;
-        $listener = $container->setDefinition($listenerId, new DefinitionDecorator('hc_user.security.authentication.login_user.listener'));
+        $listenerId = 'security.authentication.listener.hcapiuser.'.$id;
+        $listener = $container->setDefinition($listenerId, new DefinitionDecorator('hc_user.security.authentication.api_user.listener'));
 
-        return array($providerId, $listenerId, $defaultEntryPoint);
+        return [ $providerId, $listenerId, $defaultEntryPoint ];
     }
 
     /**
@@ -49,7 +49,7 @@ class LoginUserFactory implements SecurityFactoryInterface
      */
     public function getKey()
     {
-        return 'hc_user';
+        return 'hc_apiuser';
     }
 
     /**

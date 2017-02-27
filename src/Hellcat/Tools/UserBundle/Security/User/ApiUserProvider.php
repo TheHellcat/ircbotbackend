@@ -8,13 +8,12 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Doctrine\Bundle\DoctrineBundle\Registry as DoctrineRegistry;
 use Hellcat\Tools\UserBundle\Entity\User\User as UserEntity;
-use Hellcat\Tools\UserBundle\Entity\User\UserLoginToken as UserLoginTokenEntity;
 
 /**
- * Class UserProvider
+ * Class ApiUserProvider
  * @package Hellcat\Tools\UserBundle\Security\User
  */
-class LoginUserProvider implements UserProviderInterface
+class ApiUserProvider implements UserProviderInterface
 {
     /**
      * @var DoctrineRegistry
@@ -22,7 +21,7 @@ class LoginUserProvider implements UserProviderInterface
     private $doctrineRegistry;
 
     /**
-     * LoginUserProvider constructor.
+     * ApiUserProvider constructor.
      * @param DoctrineRegistry $doctrineRegistry
      */
     public function __construct(DoctrineRegistry $doctrineRegistry)
@@ -44,7 +43,7 @@ class LoginUserProvider implements UserProviderInterface
         );
 
         if (null !== $userData) {
-            if( $userData->getUserType() != 'USER' ) {
+            if( $userData->getUserType() != 'API' ) {
                 throw new UsernameNotFoundException(
                     sprintf('Invalid usertype "%s" for user "%s".', $userData->getUserType(), $username)
                 );
@@ -55,12 +54,7 @@ class LoginUserProvider implements UserProviderInterface
                 );
             }
 
-            $userRoles = [];
-            foreach ($userData->getAcl() as $aclRole) {
-                $userRoles[] = $aclRole->getRole()->getName();
-            }
-
-            return new User($username, $userData->getPassword(), '', $userRoles, $userData);
+            return new User($username, $userData->getPassword(), '', [], $userData);
         }
 
         throw new UsernameNotFoundException(
@@ -69,32 +63,8 @@ class LoginUserProvider implements UserProviderInterface
     }
 
     /**
-     * @param $token
-     * @param $verifyHash
-     * @return User
-     */
-    public function loadUserBySessionToken($token, $verifyHash)
-    {
-        $dbLoginToken = $this->doctrineRegistry->getManager()->getRepository(UserLoginTokenEntity::class);
-        $loginTokenData = $dbLoginToken->findOneBy(
-            [
-                'token' => $token,
-                'sessionVerifyHash' => $verifyHash
-            ]
-        );
-
-        if ((null !== $loginTokenData) && ($loginTokenData->getTtl() > time())) {
-            return $this->loadUserByUsername($loginTokenData->getUsername());
-        }
-
-        throw new UsernameNotFoundException(
-            sprintf('Invalid session token data.')
-        );
-    }
-
-    /**
      * @param UserInterface $user
-     * @return User|UserInterface
+     * @return User
      */
     public function refreshUser(UserInterface $user)
     {

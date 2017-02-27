@@ -8,7 +8,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * Class User
  *
- * @ORM\Table(name="user")
+ * @ORM\Table(name="user", indexes={@ORM\Index(name="username_idx", columns={"username"}), @ORM\Index(name="type_idx", columns={"user_type"}), @ORM\Index(name="created_idx", columns={"created"}), @ORM\Index(name="lastlogin_idx", columns={"last_login"})})
  * @ORM\Entity(repositoryClass="Hellcat\Tools\UserBundle\Repository\User\UserRepository")
  *
  * @package Hellcat\Tools\UserBundle\Entity
@@ -37,6 +37,13 @@ class User
      * @ORM\Column(name="password", type="string", length=128)
      */
     private $password;
+
+    /**
+     * @var string
+     *
+     * @ORM\Column(name="user_type", type="string", length=16)
+     */
+    private $userType;
 
     /**
      * @var boolean
@@ -74,11 +81,19 @@ class User
     private $acl;
 
     /**
+     * @var UserApiTokenAssign[]|ArrayCollection
+     *
+     * @ORM\OneToMany(targetEntity="UserApiTokenAssign", mappedBy="user")
+     */
+    private $apiTokenAssigns;
+
+    /**
      * User constructor.
      */
     public function __construct()
     {
         $this->acl = new ArrayCollection();
+        $this->apiTokenAssigns = new ArrayCollection();
     }
 
     /**
@@ -225,12 +240,48 @@ class User
     }
 
     /**
-     * @param UserAcl[]|ArrayCollection $acl
+     * @param UserAcl $acl
      * @return User
      */
-    public function setAcl($acl)
+    public function addAcl($acl)
     {
-        $this->acl = $acl;
+        $this->acl->add($acl);
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserType()
+    {
+        return $this->userType;
+    }
+
+    /**
+     * @param string $userType
+     * @return User
+     */
+    public function setUserType($userType)
+    {
+        $this->userType = $userType;
+        return $this;
+    }
+
+    /**
+     * @return ArrayCollection|UserApiTokenAssign[]
+     */
+    public function getApiTokenAssigns()
+    {
+        return $this->apiTokenAssigns;
+    }
+
+    /**
+     * @param UserApiTokenAssign $apiTokenAssign
+     * @return User
+     */
+    public function addApiTokenAssign($apiTokenAssign)
+    {
+        $this->apiTokenAssigns->add($apiTokenAssign);
         return $this;
     }
 }

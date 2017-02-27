@@ -6,15 +6,15 @@ use Psr\Cache\CacheItemPoolInterface;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
-use Hellcat\Tools\UserBundle\Security\Authentication\Token\LoginUserToken as UserToken;
+use Hellcat\Tools\UserBundle\Security\Authentication\Token\ApiUserToken as UserToken;
 use Hellcat\Tools\UserBundle\Security\User\User as User;
-use Hellcat\Tools\UserBundle\Security\User\LoginUserProvider as UserProvider;
+use Hellcat\Tools\UserBundle\Security\User\ApiUserProvider as UserProvider;
 
 /**
- * Class Provider
+ * Class ApiUserProvider
  * @package Hellcat\Tools\UserBundle\Security\Authentication\Provider
  */
-class LoginUserProvider implements AuthenticationProviderInterface
+class ApiUserProvider implements AuthenticationProviderInterface
 {
     /**
      * @var UserProvider
@@ -46,7 +46,7 @@ class LoginUserProvider implements AuthenticationProviderInterface
     }
 
     /**
-     * @param TokenInterface $token
+     * @param UserToken $token
      * @return UserToken
      */
     public function authenticate(TokenInterface $token)
@@ -59,16 +59,14 @@ class LoginUserProvider implements AuthenticationProviderInterface
         }
 
         /** @var User $user */
-        $user = null;
-        $isRemeberedLogin = false;
-        if ($token->getCredentialsSource() == 'LOGIN') {
-            $user = $this->userProvider->loadUserByUsername($token->getUsername());
-        } elseif ($token->getCredentialsSource() == 'SESSION') {
-            $user = $this->userProvider->loadUserBySessionToken($token->getSessionLoginToken(), $token->getSessionVerifyHash());
-            $isRemeberedLogin = true;
+        $user = $this->userProvider->loadUserByUsername($token->getUsername());
+
+        $hasToken = false;
+        foreach( $user->getUserEntity()->getApiTokenAssigns() as $tokenAssign ) {
+            $hasToken = $hasToken || ( $tokenAssign->getToken()->getTokenIdentifier() == $token->getApiToken() );
         }
 
-        if (((null !== $user) && ($user->getUsername() == $token->getUsername()) && ($user->getUserEntity()->checkPassword($token->getPassword()))) || $isRemeberedLogin) {
+        if ( ( $token->getAuthHashInRequest() == $token->getAuthHashGenerated() ) && $hasToken ) {
             $authenticatedToken = new UserToken($user->getRoles());
             $authenticatedToken->setUser($user);
             $authenticatedToken->setUsername($user->getUsername());

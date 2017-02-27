@@ -9,7 +9,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Class UserRoles
  *
  * @ORM\Table(name="user_roles")
- * @ORM\Entity(repositoryClass="Hellcat\Tools\UserBundle\Repository\UserRoleRepository")
+ * @ORM\Entity(repositoryClass="Hellcat\Tools\UserBundle\Repository\User\UserRoleRepository")
  *
  * @package Hellcat\Tools\UserBundle\Entity
  */

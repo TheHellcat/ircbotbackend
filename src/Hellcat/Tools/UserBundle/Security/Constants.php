@@ -12,4 +12,7 @@ class Constants
     const FIELD_LOGIN_PASSWORD = 'loginPassword';
     const FIELD_LOGIN_REMEMBERME = 'loginRememberme';
     const FIELD_SESSION_LOGINTOKEN = 'loginToken';
+    const FIELD_HEADER_API_APITOKEN = 'access-key';
+    const FIELD_HEADER_API_ID = 'access-id';
+    const FIELD_HEADER_API_AUTH = 'access-auth';
 }

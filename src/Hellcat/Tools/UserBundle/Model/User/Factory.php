@@ -16,8 +16,8 @@ class Factory
         return new User();
     }
 
-    public function loginResult()
+    public function commonResult()
     {
-        return new LoginResult();
+        return new CommonResult();
     }
 }

@@ -35,6 +35,7 @@ class IndexController extends Controller
         $loginMessage = '';
 
         $user = $this->get('hc_user.service.user');
+        $role = $this->get('hc_user.service.role');
 
         if( $request->get('login', '') == 'api' ) {
             $httpClient = new HttpClient();
@@ -59,6 +60,14 @@ class IndexController extends Controller
             $loginMessage = $r->getBody()->getContents();
         }
 
+        if( $request->get('login', '') == 'add' ) {
+            $username = 'test_' . time();
+            $rolename = 'ROLE_TEST_' . time();
+            $user->register($username, '00000000');
+            $role->addRole($rolename, 'Test role at ' . time());
+            $role->assignRole($username, $rolename);
+        }
+
         if( $request->get('login', '') == 'login' ) {
 //            $response = new RedirectResponse($request->getRequestUri(), 302);
             $response = new RedirectResponse('/user/dashboard', 302);
@@ -75,7 +84,7 @@ class IndexController extends Controller
 
         if( $request->get('login', '') == 'logout' ) {
             $response = new RedirectResponse('/user/dashboard', 302);
-            $user->logout($request, $response);
+            $response = $user->logout($request, $response);
             return $response;
         }
 

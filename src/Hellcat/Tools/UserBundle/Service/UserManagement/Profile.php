@@ -15,12 +15,4 @@ class Profile extends UserManagementBase
     public function getUserDataById($userId)
     {
     }
-
-    public function lockUser($userId, $reason)
-    {
-    }
-
-    public function unlockUser($userId)
-    {
-    }
 }

@@ -82,12 +82,24 @@ services:
         arguments:
             - '@doctrine'
             - '@session'
+            - '@hc_user.factory.model'
+            - '@hc_user.factory.entity'
             - '@hc_user.security.authentication.login_user.provider'
             - '@hc_user.service.firewall_listener_helper'
-            - '@hc_user.factory.model'
 
     hc_user.service.profile:
         class: Hellcat\Tools\UserBundle\Service\UserManagement\Profile
         arguments:
             - '@doctrine'
             - '@session'
+            - '@hc_user.factory.model'
+            - '@hc_user.factory.entity'
+
+    hc_user.service.role:
+        class: Hellcat\Tools\UserBundle\Service\UserManagement\Role
+        arguments:
+            - '@doctrine'
+            - '@session'
+            - '@hc_user.factory.model'
+            - '@hc_user.factory.entity'
+            - '@hc_user.service.user'

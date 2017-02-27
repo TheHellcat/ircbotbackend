@@ -3,10 +3,10 @@
 namespace Hellcat\Tools\UserBundle\Model\User;
 
 /**
- * Class LoginResult
+ * Class CommonResult
  * @package Hellcat\Tools\UserBundle\Model\User
  */
-class LoginResult
+class CommonResult
 {
     /**
      * @var boolean
@@ -28,7 +28,7 @@ class LoginResult
 
     /**
      * @param bool $success
-     * @return LoginResult
+     * @return CommonResult
      */
     public function setSuccess($success)
     {
@@ -46,7 +46,7 @@ class LoginResult
 
     /**
      * @param string $message
-     * @return LoginResult
+     * @return CommonResult
      */
     public function setMessage($message)
     {

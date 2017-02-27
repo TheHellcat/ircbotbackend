@@ -100,6 +100,6 @@ class ApiUserListener implements ListenerInterface
             }
         }
 
-        $event->setResponse($this->helper->getRedirectResponse());
+        $event->setResponse($this->helper->getSimple403Response());
     }
 }

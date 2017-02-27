@@ -20,6 +20,13 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('hellcat_usertools');
 
+        $rootNode
+            ->children()
+                ->integerNode('session_ttl')->defaultValue(3600)->end()
+                ->scalarNode('e403_redirect_url')->isRequired()->end()
+                ->integerNode('remember_ttl')->defaultValue(86400)->end()
+            ->end();
+
         // Here you should define the parameters that are allowed to
         // configure your bundle. See the documentation linked above for
         // more information on that topic.

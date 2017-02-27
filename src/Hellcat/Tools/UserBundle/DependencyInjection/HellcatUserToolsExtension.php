@@ -22,6 +22,10 @@ class HellcatUserToolsExtension extends Extension
         $configuration = new Configuration();
         $config = $this->processConfiguration($configuration, $configs);
 
+        $container->setParameter('hc_usertools_config_session_ttl', $config['session_ttl']);
+        $container->setParameter('hc_usertools_config_remember_ttl', $config['remember_ttl']);
+        $container->setParameter('hc_usertools_config_403_redir_url', $config['e403_redirect_url']);
+
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('services.yml');
     }

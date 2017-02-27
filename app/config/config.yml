@@ -71,5 +71,10 @@ swiftmailer:
 
 hellcat_twitch_api:
     api_endpoint_root: https://api.twitch.tv/kraken
-    client_id: t6d1jgtxy471dq0j2lq8w9t1f3gh6nv
-    client_secret: llqmj55b9mhfqw9am4yv80zx22jvdys
+    client_id: "%twitch_api_client_id%"
+    client_secret: "%twitch_api_secret%"
+
+hellcat_usertools:
+    session_ttl: 7200
+    e403_redirect_url: /login
+    remember_ttl: 2592000

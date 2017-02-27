@@ -4,6 +4,7 @@ namespace Hellcat\Tools\UserBundle\Service\Security;
 
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Doctrine\Bundle\DoctrineBundle\Registry as DoctrineRegistry;
@@ -176,5 +177,18 @@ class ListenerHelper
     public function getRedirectResponse()
     {
         return new RedirectResponse($this->configuration->getNoAuthRedirUrl(), 302);
+    }
+
+    /**
+     * @return Response
+     */
+    public function getSimple403Response()
+    {
+        $response = new Response();
+        $response
+            ->setStatusCode(403)
+            ->setContent('E403: Forbidden');
+
+        return $response;
     }
 }

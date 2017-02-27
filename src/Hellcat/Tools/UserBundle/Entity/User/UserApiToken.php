@@ -53,6 +53,20 @@ class UserApiToken
     private $description;
 
     /**
+     * @var integer
+     *
+     * @ORM\Column(name="rate_limit_count", type="integer")
+     */
+    private $rateLimitCount;
+
+    /**
+     * @var integer
+     *
+     * @ORM\Column(name="rate_limit_time", type="integer")
+     */
+    private $rateLimitTime;
+
+    /**
      * @var UserApiTokenAssign[]|ArrayCollection
      *
      * @ORM\OneToMany(targetEntity="UserApiTokenAssign", mappedBy="token")
@@ -172,6 +186,42 @@ class UserApiToken
     public function addUserTokenAssign($userTokenAssign)
     {
         $this->userTokenAssigns->add($userTokenAssign);
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRateLimitCount()
+    {
+        return $this->rateLimitCount;
+    }
+
+    /**
+     * @param int $rateLimitCount
+     * @return UserApiToken
+     */
+    public function setRateLimitCount($rateLimitCount)
+    {
+        $this->rateLimitCount = $rateLimitCount;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getRateLimitTime()
+    {
+        return $this->rateLimitTime;
+    }
+
+    /**
+     * @param int $rateLimitTime
+     * @return UserApiToken
+     */
+    public function setRateLimitTime($rateLimitTime)
+    {
+        $this->rateLimitTime = $rateLimitTime;
         return $this;
     }
 }

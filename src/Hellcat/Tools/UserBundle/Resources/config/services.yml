@@ -50,9 +50,9 @@ services:
     hc_user.configuration:
         class: Hellcat\Tools\UserBundle\Model\Configuration
         arguments:
-            - '90'      # logintoken TTL
-            - '/login'  # 403 redir URL
-            - '90'      # remeber-me cookie TTL
+            - '%hc_usertools_config_session_ttl%'
+            - '%hc_usertools_config_403_redir_url%'
+            - '%hc_usertools_config_remember_ttl%'
         public: false
 
     hc_user.factory.model:

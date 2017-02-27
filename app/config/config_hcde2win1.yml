@@ -33,3 +33,8 @@ monolog:
 
 #swiftmailer:
 #    delivery_addresses: ['me@example.com']
+
+hellcat_usertools:
+    session_ttl: 90
+    e403_redirect_url: /login
+    remember_ttl: 90

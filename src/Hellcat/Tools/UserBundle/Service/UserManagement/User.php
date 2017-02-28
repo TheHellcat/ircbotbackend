@@ -13,9 +13,9 @@ use Hellcat\Tools\UserBundle\Security\Authentication\Token\LoginUserToken as Use
 use Hellcat\Tools\UserBundle\Model\Factory as ModelFactory;
 use Hellcat\Tools\UserBundle\Entity\Factory as EntityFactory;
 use Hellcat\Tools\UserBundle\Entity\User\UserLoginToken as UserLoginTokenEntity;
-use Hellcat\Tools\UserBundle\Entity\User\User as UserEntity;
 use Hellcat\Tools\UserBundle\Security\Constants;
 use Hellcat\Tools\UserBundle\Model\User\CommonResult;
+use Hellcat\Tools\UserBundle\Service\UserManagement\Helper\DataFetcher;
 
 /**
  * Class User
@@ -47,41 +47,15 @@ class User extends UserManagementBase
         Session $session,
         ModelFactory $modelFactory,
         EntityFactory $entityFactory,
+        DataFetcher $dataFetcher,
         AuthenticationProvider $authProvider,
         ListenerHelper $fwListenerHelper
     )
     {
-        parent::__construct($doctrine, $session, $modelFactory, $entityFactory);
+        parent::__construct($doctrine, $session, $modelFactory, $entityFactory, $dataFetcher);
 
         $this->authProvider = $authProvider;
         $this->fwListenerHelper = $fwListenerHelper;
-    }
-
-    /**
-     * @param string $identifier
-     * @return UserEntity|null
-     */
-    public function fetchUserRaw($identifier)  // TODO: refactor this into a public:false service
-    {
-        $dbUser = $this->doctrine->getManager()->getRepository(UserEntity::class);
-
-        // try fetching the user by the name
-        $user = $dbUser->findOneBy(
-            [
-                'username' => $identifier
-            ]
-        );
-
-        if (null === $user) {
-            // if that didn't yield any result, try user ID
-            $user = $dbUser->findOneBy(
-                [
-                    'userId' => $identifier
-                ]
-            );
-        }
-
-        return $user;
     }
 
     /**
@@ -93,7 +67,7 @@ class User extends UserManagementBase
     {
         $result = $this->modelFactory->user()->commonResult();
 
-        $user = $this->fetchUserRaw($username);
+        $user = $this->dataFetcher->fetchUser($username);
 
         if (null === $user) {
             $user = $this->entityFactory->user()->user();

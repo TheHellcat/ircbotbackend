@@ -2,12 +2,7 @@
 
 namespace Hellcat\Tools\UserBundle\Service\UserManagement;
 
-use Doctrine\Bundle\DoctrineBundle\Registry as DoctrineRegistry;
-use Hellcat\Tools\UserBundle\Entity\Factory as EntityFactory;
-use Hellcat\Tools\UserBundle\Entity\User\UserRole as UserRoleEntity;
-use Hellcat\Tools\UserBundle\Model\Factory as ModelFactory;
 use Hellcat\Tools\UserBundle\Model\User\CommonResult;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * Class Role
@@ -15,59 +10,6 @@ use Symfony\Component\HttpFoundation\Session\Session;
  */
 class Role extends UserManagementBase
 {
-    /**
-     * @var User
-     */
-    private $userService;
-
-    /**
-     * Role constructor.
-     * @param DoctrineRegistry $doctrine
-     * @param Session $session
-     * @param ModelFactory $modelFactory
-     * @param EntityFactory $entityFactory
-     * @param User $userService
-     */
-    public function __construct(
-        DoctrineRegistry $doctrine,
-        Session $session,
-        ModelFactory $modelFactory,
-        EntityFactory $entityFactory,
-        User $userService
-    )
-    {
-        parent::__construct($doctrine, $session, $modelFactory, $entityFactory);
-
-        $this->userService = $userService;
-    }
-
-    /**
-     * @param string $identifier
-     * @return UserRoleEntity|null
-     */
-    public function fetchRoleRaw($identifier)  // TODO: refactor this into a public:false service
-    {
-        $dbRole = $this->doctrine->getManager()->getRepository(UserRoleEntity::class);
-
-        // try fetching the role by the name
-        $role = $dbRole->findOneBy(
-            [
-                'name' => $identifier
-            ]
-        );
-
-        if (null === $role) {
-            // if that didn't yield any result, try role ID
-            $role = $dbRole->findOneBy(
-                [
-                    'roleId' => $identifier
-                ]
-            );
-        }
-
-        return $role;
-    }
-
     /**
      * @param $roleName
      * @param $description
@@ -77,7 +19,7 @@ class Role extends UserManagementBase
     {
         $result = $this->modelFactory->user()->commonResult();
 
-        $role = $this->fetchRoleRaw($roleName);
+        $role = $this->dataFetcher->fetchRole($roleName);
 
         if (null === $role) {
             $role = $this->entityFactory->user()->userRole();
@@ -104,8 +46,8 @@ class Role extends UserManagementBase
 
     public function assignRole($user, $role)
     {
-        $user = $this->userService->fetchUserRaw($user);
-        $role = $this->fetchRoleRaw($role);
+        $user = $this->dataFetcher->fetchUser($user);
+        $role = $this->dataFetcher->fetchRole($role);
         $assign = $this->entityFactory->user()->userAcl();
 
         $assign

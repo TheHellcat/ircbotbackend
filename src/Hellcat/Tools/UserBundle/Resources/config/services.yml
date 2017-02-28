@@ -74,6 +74,15 @@ services:
             - '@hc_user.configuration'
         public: false
 
+    hc_user.service.helper.datafetcher:
+        class: Hellcat\Tools\UserBundle\Service\UserManagement\Helper\DataFetcher
+        arguments:
+            - '@doctrine'
+            - '@session'
+            - '@hc_user.factory.model'
+            - '@hc_user.factory.entity'
+        public: false
+
 
     # public services to interface with bundle functions
 
@@ -84,6 +93,7 @@ services:
             - '@session'
             - '@hc_user.factory.model'
             - '@hc_user.factory.entity'
+            - '@hc_user.service.helper.datafetcher'
             - '@hc_user.security.authentication.login_user.provider'
             - '@hc_user.service.firewall_listener_helper'
 
@@ -94,6 +104,7 @@ services:
             - '@session'
             - '@hc_user.factory.model'
             - '@hc_user.factory.entity'
+            - '@hc_user.service.helper.datafetcher'
 
     hc_user.service.role:
         class: Hellcat\Tools\UserBundle\Service\UserManagement\Role
@@ -102,4 +113,4 @@ services:
             - '@session'
             - '@hc_user.factory.model'
             - '@hc_user.factory.entity'
-            - '@hc_user.service.user'
+            - '@hc_user.service.helper.datafetcher'

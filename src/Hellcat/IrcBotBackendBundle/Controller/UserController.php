@@ -19,6 +19,7 @@ class UserController extends Controller
      */
     public function dashboardAction()
     {
+        dump($this->getUser());
         return [
             'user' => $this->getUser()
         ];

@@ -38,6 +38,16 @@ class User implements UserInterface, EquatableInterface
     private $userEntity;
 
     /**
+     * @var string
+     */
+    private $userId;
+
+    /**
+     * @var string
+     */
+    private $apiToken;
+
+    /**
      * User constructor.
      * @param string $username
      * @param string $password
@@ -52,6 +62,7 @@ class User implements UserInterface, EquatableInterface
         $this->salt = $salt;
         $this->roles = $roles;
         $this->userEntity = $userEntity;
+        $this->userId = $this->userEntity->getUserId();
     }
 
     /**
@@ -130,5 +141,31 @@ class User implements UserInterface, EquatableInterface
         }
 
         return $isEqual;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUserId()
+    {
+        return $this->userId;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiToken()
+    {
+        return $this->apiToken;
+    }
+
+    /**
+     * @param string $apiToken
+     * @return User
+     */
+    public function setApiToken($apiToken)
+    {
+        $this->apiToken = $apiToken;
+        return $this;
     }
 }

@@ -60,6 +60,7 @@ class ApiUserProvider implements AuthenticationProviderInterface
 
         /** @var User $user */
         $user = $this->userProvider->loadUserByUsername($token->getUsername());
+        $user->setApiToken($token->getApiToken());
 
         $hasToken = false;
         foreach( $user->getUserEntity()->getApiTokenAssigns() as $tokenAssign ) {

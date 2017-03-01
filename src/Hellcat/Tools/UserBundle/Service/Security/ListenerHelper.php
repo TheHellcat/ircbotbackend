@@ -61,7 +61,10 @@ class ListenerHelper
         $this->session = $session;
         $this->entities = $entities;
         $this->configuration = $configuration;
+    }
 
+    private function initSession()
+    {
         if (!$this->session->isStarted()) {
             $this->session->start();
         }
@@ -149,6 +152,7 @@ class ListenerHelper
 
         $userLoginToken = null;
         if (!$skipTokenUpdate) {
+            $this->initSession();
             $dbUserLoginToken = $this->doctrine->getManager()->getRepository(UserLoginTokenEntity::class);
             $userLoginToken = $dbUserLoginToken->findOneBy(
                 [

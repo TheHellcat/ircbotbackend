@@ -45,24 +45,17 @@ class ApiUserListener implements ListenerInterface
      * @param TokenStorageInterface $tokenStorage
      * @param AuthenticationManagerInterface $authenticationManager
      * @param DoctrineRegistry $doctrine
-     * @param Session $session
      * @param EntityFactory $entities
      */
     public function __construct(
         TokenStorageInterface $tokenStorage,
         AuthenticationManagerInterface $authenticationManager,
-        Session $session,
         ListenerHelper $helper
     )
     {
         $this->tokenStorage = $tokenStorage;
         $this->authenticationManager = $authenticationManager;
-        $this->session = $session;
         $this->helper = $helper;
-
-        if (!$this->session->isStarted()) {
-            $this->session->start();
-        }
     }
 
     /**

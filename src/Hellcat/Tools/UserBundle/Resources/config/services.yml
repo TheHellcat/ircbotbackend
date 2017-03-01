@@ -40,7 +40,6 @@ services:
         arguments:
             - '@security.token_storage'
             - '@security.authentication.manager'
-            - '@session'
             - '@hc_user.service.firewall_listener_helper'
         public: false
 

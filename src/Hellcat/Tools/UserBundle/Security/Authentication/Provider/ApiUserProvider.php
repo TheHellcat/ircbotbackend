@@ -63,11 +63,16 @@ class ApiUserProvider implements AuthenticationProviderInterface
         $user->setApiToken($token->getApiToken());
 
         $hasToken = false;
-        foreach( $user->getUserEntity()->getApiTokenAssigns() as $tokenAssign ) {
-            $hasToken = $hasToken || ( $tokenAssign->getToken()->getTokenIdentifier() == $token->getApiToken() );
+        foreach ($user->getUserEntity()->getApiTokenAssigns() as $tokenAssign) {
+            $hasToken = $hasToken || ($tokenAssign->getToken()->getTokenIdentifier() == $token->getApiToken());
         }
 
-        if ( ( $token->getAuthHashInRequest() == $token->getAuthHashGenerated() ) && $hasToken ) {
+        $hashOk = false;
+        foreach ($token->getAuthHashGenerated() as $genHash) {
+            $hashOk = $hashOk || ($token->getAuthHashInRequest() == $genHash);
+        }
+
+        if ($hashOk && $hasToken) {
             $authenticatedToken = new UserToken($user->getRoles());
             $authenticatedToken->setUser($user);
             $authenticatedToken->setUsername($user->getUsername());

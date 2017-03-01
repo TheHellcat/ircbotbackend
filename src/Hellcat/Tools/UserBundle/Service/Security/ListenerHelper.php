@@ -83,16 +83,18 @@ class ListenerHelper
     /**
      * @param Request $request
      * @param $clientSecret
-     * @return string
+     * @return array
      */
     public function generateApiRequestHash(Request $request, $clientSecret)
     {
-        $requestHash = '';
+        $requestHash = [];
         if (strlen($clientSecret) > 1) {
             $periodLength = 90;
-            $timePeriod = (int)((time() - ($periodLength / 2)) / $periodLength);
-            $hashStr = $request->getUri() . $request->getContent() . $timePeriod . $clientSecret;
-            $requestHash = hash('sha512', $hashStr);
+            for ($i = 0 - $periodLength; $i != $periodLength; $i += $periodLength) {
+                $timePeriod = (int)((time() - $i) / $periodLength);
+                $hashStr = $request->getUri() . $request->getContent() . $timePeriod . $clientSecret;
+                $requestHash[] = hash('sha512', $hashStr);
+            }
         } else {
             throw new AuthenticationException('Empty client secret, that usually doesn\'t mean good things.');
         }

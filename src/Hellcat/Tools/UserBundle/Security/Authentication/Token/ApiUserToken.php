@@ -26,7 +26,7 @@ class ApiUserToken extends AbstractToken
     private $authHashInRequest;
 
     /**
-     * @var string
+     * @var array
      */
     private $authHashGenerated;
 
@@ -44,6 +44,7 @@ class ApiUserToken extends AbstractToken
         parent::__construct($roles);
 
         $this->created = time();
+        $this->authHashGenerated = [];
 
         // If the user has roles, consider it authenticated
         $this->setAuthenticated(true);  // TODO: try if this can jsut be thrown out
@@ -112,7 +113,7 @@ class ApiUserToken extends AbstractToken
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getAuthHashGenerated()
     {
@@ -120,7 +121,7 @@ class ApiUserToken extends AbstractToken
     }
 
     /**
-     * @param string $authHashGenerated
+     * @param array $authHashGenerated
      * @return ApiUserToken
      */
     public function setAuthHashGenerated($authHashGenerated)

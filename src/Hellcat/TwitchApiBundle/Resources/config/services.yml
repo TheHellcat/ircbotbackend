@@ -1,0 +1,6 @@
+services:
+    hellcat_twitch_api:
+        class: Hellcat\TwitchApiBundle\Twitch\Twitch
+        arguments:
+            - '%hc_twitch_api_config%'
+            - '@jms_serializer'

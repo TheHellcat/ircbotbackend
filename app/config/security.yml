@@ -1,24 +1,30 @@
-# To get started with security, check out the documentation:
-# http://symfony.com/doc/current/security.html
 security:
 
-    # http://symfony.com/doc/current/security.html#b-configuring-how-users-are-loaded
     providers:
+        hc_userprovider:
+            id: hc_usertools.login_user_provider
+
+        hc_apiuserprovider:
+            id: hc_usertools.api_user_provider
+
         in_memory:
             memory: ~
 
     firewalls:
-        # disables authentication for assets and the profiler, adapt it according to your needs
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
 
-        main:
+        user:
+            pattern: ^/user
+            provider: hc_userprovider
+            hc_user: true
+
+        api:
+            pattern: ^/chatbotapi
+            provider: hc_apiuserprovider
+            hc_apiuser: true
+
+        index:
+            pattern: ^/
             anonymous: ~
-            # activate different ways to authenticate
-
-            # http_basic: ~
-            # http://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-
-            # form_login: ~
-            # http://symfony.com/doc/current/cookbook/security/form_login_setup.html

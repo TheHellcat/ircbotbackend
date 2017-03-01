@@ -8,15 +8,27 @@ class AppKernel extends Kernel
     public function registerBundles()
     {
         $bundles = [
+            // framework bundles
             new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
             new Symfony\Bundle\SecurityBundle\SecurityBundle(),
             new Symfony\Bundle\TwigBundle\TwigBundle(),
             new Symfony\Bundle\MonologBundle\MonologBundle(),
             new Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
-            new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
             new Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+
+            // 3rd party bundles
+            new Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new Doctrine\Bundle\MigrationsBundle\DoctrineMigrationsBundle(),
+            new JMS\SerializerBundle\JMSSerializerBundle(),
+
+            // app bundles
+            new AppBundle\AppBundle(),
+            new Hellcat\IrcBotBackendBundle\HellcatIrcBotBackendBundle(),
+            new Hellcat\TwitchApiBundle\HellcatTwitchApiBundle(),
+            new Hellcat\Tools\UserBundle\HellcatToolsUserBundle(),
         ];
 
+        // debug bundles
         if (in_array($this->getEnvironment(), ['dev', 'test', 'hcde2win1'], true)) {
             $bundles[] = new Symfony\Bundle\DebugBundle\DebugBundle();
             $bundles[] = new Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();

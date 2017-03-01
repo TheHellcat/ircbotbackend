@@ -1,0 +1,3 @@
+hellcat_irc_bot_backend:
+    resource: "@HellcatIrcBotBackendBundle/Resources/config/routing.yml"
+    prefix:   /

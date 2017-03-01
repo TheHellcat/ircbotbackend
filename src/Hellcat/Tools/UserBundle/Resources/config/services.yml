@@ -1,0 +1,115 @@
+services:
+
+    # authentication related services
+
+    hc_usertools.login_user_provider:
+        class: Hellcat\Tools\UserBundle\Security\User\LoginUserProvider
+        arguments:
+            - '@doctrine'
+
+    hc_usertools.api_user_provider:
+        class: Hellcat\Tools\UserBundle\Security\User\ApiUserProvider
+        arguments:
+            - '@doctrine'
+
+    hc_user.security.authentication.login_user.provider:
+        class: Hellcat\Tools\UserBundle\Security\Authentication\Provider\LoginUserProvider
+        arguments:
+            - '@hc_usertools.login_user_provider' # User Provider - WILL(!) be overwritten/replaced with the configured user provider when instantiated by the firewall
+            - '@cache.app'
+        public: false
+
+    hc_user.security.authentication.api_user.provider:
+        class: Hellcat\Tools\UserBundle\Security\Authentication\Provider\ApiUserProvider
+        arguments:
+            - '' # User Provider - WILL(!) be overwritten/replaced with the configured user provider when instantiated by the firewall
+            - '@cache.app'
+        public: false
+
+    hc_user.security.authentication.login_user.listener:
+        class: Hellcat\Tools\UserBundle\Security\Firewall\LoginUserListener
+        arguments:
+            - '@security.token_storage'
+            - '@security.authentication.manager'
+            - '@session'
+            - '@hc_user.service.firewall_listener_helper'
+        public: false
+
+    hc_user.security.authentication.api_user.listener:
+        class: Hellcat\Tools\UserBundle\Security\Firewall\ApiUserListener
+        arguments:
+            - '@security.token_storage'
+            - '@security.authentication.manager'
+            - '@hc_user.service.firewall_listener_helper'
+        public: false
+
+
+    # internal dependencies
+
+    hc_user.configuration:
+        class: Hellcat\Tools\UserBundle\Model\Configuration
+        arguments:
+            - '%hc_usertools_config_session_ttl%'
+            - '%hc_usertools_config_403_redir_url%'
+            - '%hc_usertools_config_remember_ttl%'
+        public: false
+
+    hc_user.factory.model:
+        class: Hellcat\Tools\UserBundle\Model\Factory
+        arguments:
+            - '@hc_user.configuration'
+        public: false
+
+    hc_user.factory.entity:
+        class: Hellcat\Tools\UserBundle\Entity\Factory
+        public: false
+
+    hc_user.service.firewall_listener_helper:
+        class: Hellcat\Tools\UserBundle\Service\Security\ListenerHelper
+        arguments:
+            - '@doctrine'
+            - '@session'
+            - '@hc_user.factory.entity'
+            - '@hc_user.configuration'
+        public: false
+
+    hc_user.service.helper.datafetcher:
+        class: Hellcat\Tools\UserBundle\Service\UserManagement\Helper\DataFetcher
+        arguments:
+            - '@doctrine'
+            - '@session'
+            - '@hc_user.factory.model'
+            - '@hc_user.factory.entity'
+        public: false
+
+
+    # public services to interface with bundle functions
+
+    hc_user.service.user:
+        class: Hellcat\Tools\UserBundle\Service\UserManagement\User
+        arguments:
+            - '@doctrine'
+            - '@session'
+            - '@hc_user.factory.model'
+            - '@hc_user.factory.entity'
+            - '@hc_user.service.helper.datafetcher'
+            - '@hc_user.security.authentication.login_user.provider'
+            - '@hc_user.service.firewall_listener_helper'
+
+    hc_user.service.profile:
+        class: Hellcat\Tools\UserBundle\Service\UserManagement\Profile
+        arguments:
+            - '@doctrine'
+            - '@session'
+            - '@hc_user.factory.model'
+            - '@hc_user.factory.entity'
+            - '@hc_user.service.helper.datafetcher'
+
+    hc_user.service.role:
+        class: Hellcat\Tools\UserBundle\Service\UserManagement\Role
+        arguments:
+            - '@doctrine'
+            - '@session'
+            - '@hc_user.factory.model'
+            - '@hc_user.factory.entity'
+            - '@hc_user.service.helper.datafetcher'

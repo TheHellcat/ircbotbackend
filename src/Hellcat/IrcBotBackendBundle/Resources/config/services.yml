@@ -1,5 +1,0 @@
-services:
-    hellcat_botbackend_entity_manager:
-        class: Hellcat\IrcBotBackendBundle\Entity\Manager
-        arguments:
-            - '@doctrine'

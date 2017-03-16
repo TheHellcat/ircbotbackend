@@ -16,14 +16,19 @@ security:
             security: false
 
         user:
-            pattern: ^/user
+            pattern: ^/botctl
             provider: hc_userprovider
             hc_user: true
 
         api:
-            pattern: ^/chatbotapi
+            pattern: ^/bapi
             provider: hc_apiuserprovider
             hc_apiuser: true
+
+        toolbox:
+            pattern: ^/toolbox
+            provider: hc_userprovider
+            hc_user: true
 
         index:
             pattern: ^/

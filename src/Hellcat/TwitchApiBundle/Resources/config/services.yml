@@ -1,6 +1,20 @@
 services:
+
+    hellcat_twitch_factory_model:
+        class: Hellcat\TwitchApiBundle\Model\Factory
+        public: false
+
     hellcat_twitch_api:
         class: Hellcat\TwitchApiBundle\Twitch\Twitch
         arguments:
             - '%hc_twitch_api_config%'
+            - '@jms_serializer'
+            - '@hellcat_twitch_factory_model'
+
+    hellcat_twitch_authhandler:
+        class: Hellcat\TwitchApiBundle\Service\Auth
+        arguments:
+            - '@hellcat_twitch_api'
+            - '@hellcat_twitch_factory_model'
+            - '@doctrine'
             - '@jms_serializer'

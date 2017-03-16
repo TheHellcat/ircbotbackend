@@ -1,3 +1,17 @@
+app:
+    resource: "@AppBundle/Controller/AppController.php"
+    prefix: /
+    type: annotation
+
+
 hellcat_irc_bot_backend:
-    resource: "@HellcatIrcBotBackendBundle/Resources/config/routing.yml"
-    prefix:   /
+    resource: "@HellcatChatBotBackendBundle/Resources/config/routing.yml"
+    prefix:   /botctl
+
+hellcat_chat_bot_api:
+    resource: "@HellcatChatBotApiBundle/Resources/config/routing.yml"
+    prefix:   /bapi
+
+hellcat_twitch_toolbox:
+    resource: "@HellcatTwitchToolboxBundle/Resources/config/routing.yml"
+    prefix:   /toolbox

@@ -95,6 +95,10 @@ class User extends UserManagementBase
         return $result;
     }
 
+    public function registerApiUser()
+    {
+    }
+
     /**
      * @param string $username
      * @param string $password

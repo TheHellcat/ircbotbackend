@@ -1,0 +1,5 @@
+services:
+    hellcat_botbackend_entity_manager:
+        class: Hellcat\ChatBotBackendBundle\Entity\Manager
+        arguments:
+            - '@doctrine'

@@ -5,6 +5,7 @@ namespace Hellcat\TwitchApiBundle\Twitch;
 use GuzzleHttp\Client as HttpClient;
 use JMS\Serializer\Serializer;
 use Hellcat\TwitchApiBundle\Model\Configuration;
+use Hellcat\TwitchApiBundle\Model\Factory as ModelFactory;
 
 /**
  * Class Twitch
@@ -33,13 +34,19 @@ class Twitch
     private $serializer;
 
     /**
+     * @var ModelFactory
+     */
+    private $modelFactory;
+
+    /**
      * Twitch constructor.
      * @param string $config Serialized version of the configuration object
      */
-    public function __construct($config, Serializer $serializer)
+    public function __construct($config, Serializer $serializer, ModelFactory $modelFactory)
     {
         $this->factory = [];
         $this->serializer = $serializer;
+        $this->modelFactory = $modelFactory;
 
         $this->httpClient = new HttpClient();
 
@@ -95,5 +102,13 @@ class Twitch
     public function getSerializer()
     {
         return $this->serializer;
+    }
+
+    /**
+     * @return ModelFactory
+     */
+    public function getModelFactory()
+    {
+        return $this->modelFactory;
     }
 }

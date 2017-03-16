@@ -2,62 +2,20 @@
 
 namespace Hellcat\TwitchApiBundle\Twitch\Api;
 
-use GuzzleHttp\Client as HttpClient;
-use JMS\Serializer\Serializer;
-use Hellcat\TwitchApiBundle\Model\Configuration;
 use Hellcat\TwitchApiBundle\Model\Twitch\Auth\Token;
-use Hellcat\TwitchApiBundle\Twitch\Helper;
 use Hellcat\TwitchApiBundle\Model\Twitch\User\User as UserModel;
 
 /**
  * Class Auth
  * @package Hellcat\TwitchApiBundle\Twitch\Api
  */
-class Auth
+class Auth extends ApiBaseClass
 {
-    /**
-     * @var Configuration
-     */
-    private $config;
-
-    /**
-     * @var HttpClient
-     */
-    private $httpClient;
-
-    /**
-     * @var Serializer
-     */
-    private $serializer;
-
     /**
      * @var string
      */
     private $state;
 
-    /**
-     * @var Helper\CommunicationHelper
-     */
-    private $commHelper;
-
-    /**
-     * Auth constructor.
-     * @param Configuration $config
-     * @param HttpClient $httpClient
-     * @param Serializer $serializer
-     */
-    public function __construct(
-        Configuration $config,
-        HttpClient $httpClient,
-        Serializer $serializer,
-        Helper\CommunicationHelper $commHelper
-    )
-    {
-        $this->config = $config;
-        $this->httpClient = $httpClient;
-        $this->serializer = $serializer;
-        $this->commHelper = $commHelper;
-    }
 
     /**
      * First thing to be called to authenticate a user with Twitch.
@@ -102,7 +60,6 @@ class Auth
         ];
 
         return $this->config->getApiEndpoint() . $apiCall . '?' . http_build_query($query);
-
     }
 
     /**

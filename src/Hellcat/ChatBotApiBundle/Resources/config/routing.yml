@@ -1,0 +1,9 @@
+bapi_common:
+    resource: "@HellcatChatBotApiBundle/Controller/"
+    prefix: /
+    type: annotation
+
+bapi_v1:
+    resource: "@HellcatChatBotApiBundle/Controller/V1/"
+    prefix: /v1
+    type: annotation

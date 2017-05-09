@@ -16,12 +16,12 @@ security:
             security: false
 
         user:
-            pattern: ^/botctl
+            pattern: ^/botcfg
             provider: hc_userprovider
             hc_user: true
 
         api:
-            pattern: ^/bapi
+            pattern: ^/bapi/v1
             provider: hc_apiuserprovider
             hc_apiuser: true
 

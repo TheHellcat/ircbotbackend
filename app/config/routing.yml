@@ -6,7 +6,7 @@ app:
 
 hellcat_irc_bot_backend:
     resource: "@HellcatChatBotBackendBundle/Resources/config/routing.yml"
-    prefix:   /botctl
+    prefix:   /botcfg
 
 hellcat_chat_bot_api:
     resource: "@HellcatChatBotApiBundle/Resources/config/routing.yml"

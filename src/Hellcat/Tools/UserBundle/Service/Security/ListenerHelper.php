@@ -90,7 +90,7 @@ class ListenerHelper
         $requestHash = [];
         if (strlen($clientSecret) > 1) {
             $periodLength = 90;
-            for ($i = 0 - $periodLength; $i != $periodLength; $i += $periodLength) {
+            for ($i = 0 - $periodLength; $i <= $periodLength; $i += $periodLength) {
                 $timePeriod = (int)((time() - $i) / $periodLength);
                 $hashStr = $request->getUri() . $request->getContent() . $timePeriod . $clientSecret;
                 $requestHash[] = hash('sha512', $hashStr);

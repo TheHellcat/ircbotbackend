@@ -35,6 +35,6 @@ monolog:
 #    delivery_addresses: ['me@example.com']
 
 hellcat_usertools:
-    session_ttl: 90
+    session_ttl: 3600
     e403_redirect_url: /login
-    remember_ttl: 90
+    remember_ttl: 3600

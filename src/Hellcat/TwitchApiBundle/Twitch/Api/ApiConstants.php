@@ -8,6 +8,8 @@ namespace Hellcat\TwitchApiBundle\Twitch\Api;
  */
 class ApiConstants
 {
+    const ENDPOINT_USERS_GETUSER = 'GET:/users?login={username}';
+
     const ENDPOINT_CHANNELS_GETCHANNEL = 'GET:/channel';
     const ENDPOINT_CHANNELS_GETCHANNELBYID = 'GET:/channels/{channelId}';
     const ENDPOINT_CHANNELS_UPDATECHANNEL = 'PUT:/channels/{channelId}';

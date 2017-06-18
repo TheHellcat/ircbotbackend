@@ -63,4 +63,21 @@ class Factory
         }
         return $this->factory[__FUNCTION__];
     }
+
+    /**
+     * @return Users
+     */
+    public function users()
+    {
+        if (!isset($this->factory[__FUNCTION__])) {
+            $this->factory[__FUNCTION__] = new Users(
+                $this->twMan->getConfig(),
+                $this->twMan->getHttpClient(),
+                $this->twMan->getSerializer(),
+                $this->twMan->helper()->communication(),
+                $this->twMan->getModelFactory()
+            );
+        }
+        return $this->factory[__FUNCTION__];
+    }
 }
